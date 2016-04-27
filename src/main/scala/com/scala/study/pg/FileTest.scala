@@ -16,27 +16,23 @@ object FileTest {
     write(list, "C:/Users/daiki/Desktop/result.txt")
   }
 
-  def readLine(path:String, encoding:String = "Windows-31J")  = {
-    val source = Source.fromFile(path, encoding)
-    val list = source.getLines().toList
-    source.close
-    list
+  def readLine(path:String, encoding:String = "Windows-31J") : List[String]  = {
+    using(Source.fromFile(path, encoding)) {
+      s => s.getLines().toList
+    }
   }
 
-  def write(lines:List[String], path:String, encoding:String = "Windows-31J") = {
-    val writer = Files.newBufferedWriter(Paths.get(path), Charset.forName(encoding))
-    lines.map(_ + "\r\n").foreach(writer.write)
-
-    writer.close()
+  def write(lines:List[String], path:String, encoding:String = "Windows-31J") : Unit = {
+    using( Files.newBufferedWriter(Paths.get(path), Charset.forName(encoding))) {
+      writer => lines.map(_ + "\r\n").foreach(writer.write)
+    }
   }
 
-  def using[A <% {def close():Unit}](s:A, f:A => Any):Any = {
-    var v:Any = null
+  def using[A <% {def close():Unit}, B](s:A)(f:A => B) : B = {
     try {
-      v = f(s)
+      f(s)
     } finally {
       s.close()
     }
-    v
   }
 }

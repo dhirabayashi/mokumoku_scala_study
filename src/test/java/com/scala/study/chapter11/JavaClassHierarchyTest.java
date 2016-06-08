@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 /**
